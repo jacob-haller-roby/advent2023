@@ -1,0 +1,14 @@
+{
+  "ts-node": {
+    "esm": true // «———— enabling ESM for ts-node
+  },
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "es2022",
+    "target": "es2021",
+    "moduleResolution":"bundler"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
