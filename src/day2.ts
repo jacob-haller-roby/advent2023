@@ -55,16 +55,32 @@ const isValidGame = (game: Game): boolean => {
     maxPulls.blue <= 14;
 }
 
-const maxPullReducer = (acc, cur): Pull => ({
-  red: Math.max(acc.red, cur.red),
-  green: Math.max(acc.green, cur.green),
-  blue: Math.max(acc.blue, cur.blue)
-});
 
+const makePullReducer = (colorCombiner: (a: number, b: number) => number) =>
+  (acc: Pull, cur: Pull): Pull => ({
+    red: colorCombiner(acc.red, cur.red),
+    green: colorCombiner(acc.green, cur.green),
+    blue: colorCombiner(acc.blue, cur.blue),
+  });
+
+const maxPullReducer = makePullReducer(Math.max);
+
+const getPullPower = (pull: Pull): number =>
+  pull.red * pull.green * pull.blue;
+
+// Part 1
+// const result = inputData.split('\n')
+//   .map(parseRow)
+//   .filter(isValidGame)
+//   .map(game => game.id)
+//   .reduce((acc, cur) => acc + cur);
+
+// Part 2
 const result = inputData.split('\n')
   .map(parseRow)
-  .filter(isValidGame)
-  .map(game => game.id)
-  .reduce((acc, cur) => acc + cur);
+  .map(game => game.pulls)
+  .map(pulls => pulls.reduce(maxPullReducer, ZeroPullIdentity))
+  .map(getPullPower)
+  .reduce((acc, cur) => acc + cur, 0);
 
 printResults(result, start);
