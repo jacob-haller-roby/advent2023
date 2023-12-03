@@ -63,6 +63,20 @@ const makeIsValidPartNumber = (symbolMap: SymbolMap) =>
 
   }
 
+const partNumberToGearMapReducer = (gearMap: GearMap, partNumber: PartNumber): GearMap => {
+  const xStart = Math.max(partNumber.location.xStart - 1, 0);
+  const xEnd = Math.min(partNumber.location.xEnd + 1, gearMap[0].length - 1) + 1;
+  const yStart = Math.max(partNumber.location.y - 1, 0);
+  const yEnd = Math.min(partNumber.location.y + 1, gearMap.length -1) + 1;
+
+  for (let x = xStart; x < xEnd; x++) {
+    for (let y = yStart; y < yEnd; y++) {
+      gearMap[y][x]?.push(partNumber);
+    }
+  }
+  return gearMap;
+}
+
 
 // PART 1
 const sumOfPartNumbers = async () => {
@@ -77,20 +91,6 @@ const sumOfPartNumbers = async () => {
     .filter(isValidPartNumber)
     .map(partNumber => partNumber.id)
     .reduce((acc, cur) => acc + cur, 0);
-}
-
-const partNumberToGearMapReducer = (gearMap: GearMap, partNumber: PartNumber): GearMap => {
-  const xStart = Math.max(partNumber.location.xStart - 1, 0);
-  const xEnd = Math.min(partNumber.location.xEnd + 1, gearMap[0].length - 1) + 1;
-  const yStart = Math.max(partNumber.location.y - 1, 0);
-  const yEnd = Math.min(partNumber.location.y + 1, gearMap.length -1) + 1;
-
-  for (let x = xStart; x < xEnd; x++) {
-    for (let y = yStart; y < yEnd; y++) {
-      gearMap[y][x]?.push(partNumber);
-    }
-  }
-  return gearMap;
 }
 
 // PART 2
