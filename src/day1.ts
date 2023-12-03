@@ -1,4 +1,5 @@
 import readFile from "./utils/readFile";
+import printResults from "./utils/printResults";
 const start = performance.now();
 
 const inputData = await readFile('day1.txt');
@@ -41,7 +42,4 @@ const result = inputData.split('\n')
   .map(digits => digits[0] * 10 + digits[1])
   .reduce((acc, cur) => acc + cur, 0);
 
-const end = performance.now();
-
-console.log(`The result is: ${result}`);
-console.log(`Runtime was: ${(end - start).toFixed(0)}ms`)
+printResults(result, start);
