@@ -1,6 +1,8 @@
 import runTest from "./utils/runTest";
 import readFile from "./utils/readFile";
+import runMetricsTest from "./utils/runMetricsTest";
 
+const dataInput = await readFile('day3.txt');
 // Array of possible PartNumbers
 interface PartNumber {
   id: number,
@@ -80,7 +82,6 @@ const partNumberToGearMapReducer = (gearMap: GearMap, partNumber: PartNumber): G
 
 // PART 1
 const sumOfPartNumbers = async () => {
-  const dataInput = await readFile('day3.txt');
   const rows = dataInput.split('\n');
 
   const symbolMap: SymbolMap = rows.map(parseRowSymbols);
@@ -95,7 +96,6 @@ const sumOfPartNumbers = async () => {
 
 // PART 2
 const sumOfGears = async () => {
-  const dataInput = await readFile('day3.txt');
   const rows = dataInput.split('\n');
 
   const gearMap: GearMap = rows.map(parseRowGearSymbols);
@@ -110,5 +110,5 @@ const sumOfGears = async () => {
     .reduce((acc, cur) => acc + cur, 0)
 }
 
-void runTest(sumOfPartNumbers, 'Part 1');
-void runTest(sumOfGears, 'Part 2');
+await runMetricsTest(sumOfPartNumbers, 'Part 1');
+await runMetricsTest(sumOfGears, 'Part 2');

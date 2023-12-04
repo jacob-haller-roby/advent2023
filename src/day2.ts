@@ -2,8 +2,8 @@ import readFile from "./utils/readFile";
 import runTest from "./utils/runTest";
 
 void runTest(async () => {
-  const inputData = await readFile('day2.txt');
 
+  const inputData = await readFile('day2.txt');
   interface Game {
     id: number,
     pulls: Pull[]

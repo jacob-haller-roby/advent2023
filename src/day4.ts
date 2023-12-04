@@ -1,6 +1,7 @@
 import runTest from "./utils/runTest";
 import readFile from "./utils/readFile";
-
+import runMetricsTest from "./utils/runMetricsTest";
+const dataInput = await readFile('day4.txt');
 interface Card {
   id: number
   winningNumbers: number[],
@@ -37,7 +38,6 @@ const findMatchedNumbers = (card: Card): number[] => {
 const countToScore = (count: number): number => count === 0 ? 0 : Math.pow(2, count - 1);
 
 const calculateScratchCardScore = async () => {
-  const dataInput = await readFile('day4.txt');
   return dataInput.split('\n')
     .map(parseRow)
     .map(findMatchedNumbers)
@@ -68,7 +68,6 @@ const makeRecursiveScoreSearch = (winners: number[][]) => {
 
 
 const calculateScratchCardCollection = async () => {
-  const dataInput = await readFile('day4.txt');
   const cards = dataInput.split('\n')
     .map(parseRow);
   const winners: number[][] = cards.map(findMatchedNumbers);
@@ -82,5 +81,5 @@ const calculateScratchCardCollection = async () => {
 }
 
 
-void runTest(calculateScratchCardScore, 'Part 1');
-void runTest(calculateScratchCardCollection, 'Part 2');
+await runMetricsTest(calculateScratchCardScore, 'Part 1');
+await runMetricsTest(calculateScratchCardCollection, 'Part 2');
