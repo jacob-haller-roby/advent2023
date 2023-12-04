@@ -76,7 +76,7 @@ const calculateScratchCardCollection = async () => {
   const scores = Array(cards.length + 1).fill(undefined);
   const recursiveScoreSearch = makeRecursiveScoreSearch(winners, scores);
   return cards
-    .map(card => Number(card.id))
+    .map(card => card.id)
     .map(recursiveScoreSearch)
     .reduce((acc, cur) => acc + cur, 0);
 }
