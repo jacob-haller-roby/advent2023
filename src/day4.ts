@@ -9,7 +9,7 @@ interface Card {
 
 const parseRow = (row: string): Card => {
   const [cardNameString, numbersString] = row.split(':');
-  const id = Number(cardNameString.match(/\d+/g)[0]);
+  const id = parseNumbers(cardNameString)[0];
   const [winningNumbersString, myNumbersString] = numbersString.split('|');
   const winningNumbers = parseNumbers(winningNumbersString);
   const myNumbers = parseNumbers(myNumbersString);
