@@ -11,20 +11,19 @@ const parseRow = (row: string): Card => {
   const [cardNameString, numbersString] = row.split(':');
   const id = Number(cardNameString.match(/\d+/g)[0]);
   const [winningNumbersString, myNumbersString] = numbersString.split('|');
-  const winningNumbers = [
-      ...winningNumbersString.matchAll(/\d+/g)
-    ]
-    .map(match => match[0])
-    .map(number => Number(number));
-  const myNumbers =[
-      ...myNumbersString.matchAll(/\d+/g)
-    ]
-    .map(match => match[0])
-    .map(number => Number(number));
+  const winningNumbers = parseNumbers(winningNumbersString);
+  const myNumbers = parseNumbers(myNumbersString);
   return {
     id, myNumbers, winningNumbers
   };
 }
+
+const parseNumbers = (numberString: string): number[] =>
+  [
+    ...numberString.matchAll(/\d+/g)
+  ]
+  .map(match => match[0])
+  .map(number => Number(number));
 
 const findMatchedNumbers = (card: Card): number[] => {
   const winningNumberMap = card.winningNumbers.reduce((acc, cur) => {
