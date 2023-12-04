@@ -9,16 +9,17 @@ interface Card {
 
 const parseRow = (row: string): Card => {
   const [cardNameString, numbersString] = row.split(':');
-  const idString = cardNameString.split(' ').pop();
-  const id = Number(idString);
+  const id = Number(cardNameString.match(/\d+/g)[0]);
   const [winningNumbersString, myNumbersString] = numbersString.split('|');
-  const winningNumbers = winningNumbersString.trim()
-    .split(' ')
-    .filter(str => str != '')
+  const winningNumbers = [
+      ...winningNumbersString.matchAll(/\d+/g)
+    ]
+    .map(match => match[0])
     .map(number => Number(number));
-  const myNumbers = myNumbersString.trim()
-    .split(' ')
-    .filter(str => str != '')
+  const myNumbers =[
+      ...myNumbersString.matchAll(/\d+/g)
+    ]
+    .map(match => match[0])
     .map(number => Number(number));
   return {
     id, myNumbers, winningNumbers
