@@ -3,6 +3,7 @@ import runMetricsTest from "./utils/runMetricsTest";
 
 const dataInput = await readFile('day5.txt');
 
+type TranslationMap = MapEntry[];
 interface MapEntry {
   target: number,
   source: number,
@@ -28,16 +29,16 @@ const part1 = (): number => {
   );
 }
 
-const parseMap = (mapString: string): MapEntry[] =>
+const parseMap = (mapString: string): TranslationMap =>
   mapString.split('\n')
     .map(row =>
       [...row.matchAll(/\d+/g)]
         .map(match => Number([match]))
     )
-    .filter(parsedRow => parsedRow.length !== 0)
+    .filter(parsedRow => parsedRow.length === 3)
     .map(([target, source, range]) => ({target, source, range}));
 
-const mapReducer = (currentId: number, map: MapEntry[]): number => {
+const mapReducer = (currentId: number, map: TranslationMap): number => {
   const entry = map.find(entry => entry.source <= currentId && entry.source + entry.range > currentId);
   if (!entry) return currentId;
   return entry.target - entry.source + currentId;
@@ -68,24 +69,27 @@ const parseSeedsToEntries = (seedString: string): Range[] =>
     }))
 
 
-const mapRangeReducer = (ranges: Range[], map: MapEntry[]): Range[] =>
+const mapRangeReducer = (ranges: Range[], map: TranslationMap): Range[] =>
   ranges
     .flatMap(range =>
       map
-        .map(entry => {
-          const start = Math.max(entry.source, range.start);
-          const end = Math.min(entry.source + entry.range, range.end)
-          const offset = entry.target - entry.source;
-          return {
-            start: start + offset,
-            end: end + offset
-          }
-        })
+        .map(makeConvertRange(range))
         .filter(range => range.start <= range.end)
     );
 
+const makeConvertRange = (range: Range) =>
+  (entry: MapEntry): Range => {
+    const start = Math.max(entry.source, range.start);
+    const end = Math.min(entry.source + entry.range, range.end)
+    const offset = entry.target - entry.source;
+    return {
+      start: start + offset,
+      end: end + offset
+    }
+  }
+
 // extend map to cover entire range, inserting `source = target` entries for uncovered areas
-const makeExpandMap = (upperLimit: number) => (map: MapEntry[]): MapEntry[] => {
+const makeExpandMap = (upperLimit: number) => (map: TranslationMap): TranslationMap => {
   return map.reduce((ranges: Range[], mapEntry: MapEntry) => {
       const mapRange: Range = {
         start: mapEntry.source,
@@ -149,7 +153,7 @@ const makeExpandMap = (upperLimit: number) => (map: MapEntry[]): MapEntry[] => {
     .concat(map)
 }
 
-const findUpperLimit = (mapEntries: MapEntry[], seeds: Range[]): number => {
+const findUpperLimit = (mapEntries: TranslationMap, seeds: Range[]): number => {
 
   const mapUpperLimit = mapEntries.reduce((max, entry) => {
     const maxEntrySource = entry.source + entry.range;
