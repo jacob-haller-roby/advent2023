@@ -18,11 +18,11 @@ export default async (test: () => Promise<number> | number, label?: string) => {
   }
 
   const padLength = Math.max(result.toString().length, 8);
-  console.log(`\nTest results${label ? ` for ${label.blue}` : ''}:`)
+  console.log(`\nTest results${label ? ` for ${label.blue}` : ''}:`.underline)
   console.log(`Answer:           ${leftPad(result.toString(), padLength).magenta}`);
   console.log(`First Runtime:    ${formatTime(firstRun, padLength).yellow}`)
   console.log(`Average Runtime:  ${formatTime(getAverage(timings), padLength).yellow}`)
-  console.log(`Std Dev:          ${formatTime(getStandardDeviation(timings), padLength).yellow}`)
+  console.log(`Std Dev:          ${formatTime(getStandardDeviation(timings), padLength, '±').yellow}`)
 }
 
 const getStandardDeviation = (values: number[]) => {
