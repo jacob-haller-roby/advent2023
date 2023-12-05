@@ -1,4 +1,6 @@
 import formatTime from "./formatTime";
+import 'colors';
+import leftPad from "./leftPad";
 
 export default async (test: () => Promise<number> | number, label?: string) => {
 
@@ -14,11 +16,13 @@ export default async (test: () => Promise<number> | number, label?: string) => {
     const end = performance.now();
     timings.push(end-start);
   }
-  console.log(`\nTest results${label ? ` for ${label}` : ''}:`)
-  console.log(`The result is: ${result}`);
-  console.log(`First run took: ${formatTime(firstRun)}`)
-  console.log(`Average runtime was: ${formatTime(getAverage(timings))}`)
-  console.log(`Std Dev was: ${formatTime(getStandardDeviation(timings))}`)
+
+  const padLength = Math.max(result.toString().length, 8);
+  console.log(`\nTest results${label ? ` for ${label.blue}` : ''}:`)
+  console.log(`Answer:           ${leftPad(result.toString(), padLength).magenta}`);
+  console.log(`First Runtime:    ${formatTime(firstRun, padLength).yellow}`)
+  console.log(`Average Runtime:  ${formatTime(getAverage(timings), padLength).yellow}`)
+  console.log(`Std Dev:          ${formatTime(getStandardDeviation(timings), padLength).yellow}`)
 }
 
 const getStandardDeviation = (values: number[]) => {
