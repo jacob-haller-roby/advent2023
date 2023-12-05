@@ -1,3 +1,5 @@
+import formatTime from "./formatTime";
+
 export default async (test: () => Promise<number> | number, label?: string) => {
 
   const start = performance.now();
@@ -14,9 +16,9 @@ export default async (test: () => Promise<number> | number, label?: string) => {
   }
   console.log(`\nTest results${label ? ` for ${label}` : ''}:`)
   console.log(`The result is: ${result}`);
-  console.log(`First run took: ${firstRun.toFixed(2)}ms`)
-  console.log(`Average runtime was: ${getAverage(timings).toFixed(2)}ms`)
-  console.log(`Std Dev was: ${getStandardDeviation(timings).toFixed(2)}ms`)
+  console.log(`First run took: ${formatTime(firstRun)}`)
+  console.log(`Average runtime was: ${formatTime(getAverage(timings))}`)
+  console.log(`Std Dev was: ${formatTime(getStandardDeviation(timings))}`)
 }
 
 const getStandardDeviation = (values: number[]) => {
