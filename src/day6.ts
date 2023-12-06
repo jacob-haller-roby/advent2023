@@ -43,7 +43,6 @@ const getWinnerCount = (race: Race): number => {
 
 const part2 = (): number => {
   const race = parseBadKerningData(dataInput);
-  // const highestLoser = findFirstWinner(race) - 1;
   const highestLoser = findFirstWinnerRecursive(race, {start: 0, end: race.time}) - 1;
   return race.time - (highestLoser * 2) - 1;
 }
@@ -59,13 +58,6 @@ const parseBadKerningData = (data: string): Race => {
       )
     );
   return { time, distance }
-}
-
-const findFirstWinner = (race: Race): number => {
-  for (let i = 0; i < race.time; i++) {
-    const distance = i * (race.time - i)
-    if (distance > race.distance) return i;
-  }
 }
 
 const findFirstWinnerRecursive = (race: Race, remainingRange: Range) => {
