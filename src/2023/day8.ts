@@ -18,6 +18,7 @@ interface VisitedRecord {
 interface Loop {
   length: number;
   offset: number;
+  remainder: number;
 }
 
 const part1 = () => {
@@ -61,23 +62,42 @@ const part2 = () => {
   // Collect visits into loop definitions of length/offset
   const loops = visitedDestinations
     .map(destinationMap => Object.values(destinationMap)[0]) // only 1 destination per starting location, thankfully
-    .map(recordToLoop);
+    .map(recordToLoop)
+    .reduce(reduceToDistinctLoops, []);
+
+
+  if (loops.every(loop => loop.remainder === 0)) {
+    // if all loops are different sized, but have no extraneous starts, we just need the least common multiple
+    const loopLengths = loops.map(loop => loop.length);
+    const greatestCommonDenominator = (a: number, b: number) => b === 0 ? a : greatestCommonDenominator(b, a % b);
+    const leastCommonMultiple = (a: number, b: number) => (a / greatestCommonDenominator(a, b)) * b;
+
+    return loopLengths.reduce(leastCommonMultiple, 1);
+
+  }
 
   // iterate based on longest loop to maximize intervals
-  const maxLengthLoop = loops.reduce(reduceToMaxLoopLength, {length: -Infinity, offset: 0});
+  const maxLengthLoop = loops.reduce(reduceToMaxLoopLength, {length: -Infinity, offset: 0, remainder: 0});
 
   for (let i = maxLengthLoop.offset + maxLengthLoop.length; ; i += maxLengthLoop.length) {
     // if every loop is at its start, return
     if (loops.every(loop =>
-      (i - loop.offset) % loop.length === 0
+      i % loop.length === loop.remainder
     )) return i;
   }
 }
 
+const reduceToDistinctLoops = (loops: Loop[], loop: Loop): Loop[] => {
+  if (loops.some(knownLoop => knownLoop.remainder === loop.remainder && knownLoop.length === loop.length)) {
+    return loops;
+  }
+  return [...loops, loop];
+}
 const reduceToMaxLoopLength = (maxLoop: Loop, loop: Loop): Loop => maxLoop.length > loop.length ? maxLoop : loop;
 const recordToLoop = (record: VisitedRecord): Loop => ({
   length: record.steps[1] - record.steps[0],
-  offset: record.steps[0]
+  offset: record.steps[0],
+  remainder: record.steps[1] - record.steps[0] - record.steps[0]
 })
 
 const parseNodes = (nodesString: string): Record<string, Node> => {
@@ -107,5 +127,5 @@ const parseNodes = (nodesString: string): Record<string, Node> => {
     }, {})
 }
 
-await runTest(part1, 'Part 1');
-await runTest(part2, 'Part 2');
+await runMetricsTest(part1, 'Part 1');
+await runMetricsTest(part2, 'Part 2');
